@@ -1,0 +1,51 @@
+% Parameters
+Fs = 1000;                     % Sampling frequency in Hz
+Fpass = 50;                    % Passband frequency in Hz
+Fstop = 150;                   % Stopband frequency in Hz
+Apass = 0.5;                   % Passband ripple in dB
+Astop = 40;                    % Stopband attenuation in dB
+transition_band_width = 0.8;   % Transition band width in Hz
+
+% Signal generation (assuming you have an ECG signal)
+t = 0:1/Fs:1;                   % Time vector
+ecg_signal = 0.7*sin(2*pi*10*t) + 0.5*sin(2*pi*30*t) + randn(size(t));
+
+% Filter design
+M = 217;                       % Filter order
+f1 = (Fpass - transition_band_width/2) / Fs;
+f2 = (Fstop + transition_band_width/2) / Fs;
+
+freq_range = [f1, f2];
+ideal_response = zeros(1, M);
+ideal_response(round(f1 * M):round(f2 * M)) = 1;
+window_function = hanning(M)';
+windowed_response = ideal_response .* window_function;
+b = windowed_response / sum(window_function);
+
+% Apply the filter to the ECG signal using the filter function
+filtered_ecg = filter(b, 1, ecg_signal);
+
+% Plot the original and filtered signals in the time domain
+figure;
+subplot(2, 1, 1);
+plot(t, ecg_signal);
+title('Original ECG Signal');
+
+subplot(2, 1, 2);
+plot(t, filtered_ecg);
+title('Filtered ECG Signal');
+
+% Perform frequency analysis to verify noise removal
+figure;
+subplot(2, 1, 1);
+periodogram(ecg_signal, [], length(ecg_signal), Fs, 'power');
+title('Original ECG Signal Spectrum');
+
+subplot(2, 1, 2);
+periodogram(filtered_ecg, [], length(filtered_ecg), Fs, 'power');
+title('Filtered ECG Signal Spectrum');
+
+% Frequency response of the filter
+figure;
+freqz(b, 1, 1024, Fs);
+title('Filter Frequency Response');
