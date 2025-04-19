@@ -47,9 +47,9 @@ Normalize the filter coefficients.
 
 Filter the ECG signal using filter().
 
-![image](https://github.com/user-attachments/assets/39aede99-a895-4ba3-b95d-9e393fe06bfe)
-![image](https://github.com/user-attachments/assets/5740a8d1-8c51-4012-ab1f-8b8e9f08a8c1)
-![image](https://github.com/user-attachments/assets/8b4ce15a-3174-43bd-b7c6-d9668a67271b)
+
+
+
 
 
 
